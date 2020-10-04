@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+
+<!-- Title -->
+{% block title %} Assignment {% endblock %}
+ 
+<!-- body -->
+{% block body %} 
+<div class="container-xl">
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6"><h2>Manage <b>Assignments</b></h2>
+					</div>
+					<div class="col-sm-6">
+						<button type="button" class="btn btn-success rounded-0 float-right" data-toggle="modal" data-target="#mymodal"><i class="material-icons">&#xE147;</i> <span>Add New Assignment</span></button>					
+					</div>
+				</div>
+			</div>
+
+			<!-- Flash -->
+			{% with messages = get_flashed_messages() %}
+ 
+                {% if messages %}
+ 
+                {% for message in messages %}
+ 
+                <div class="alert alert-success alert-dismissable" role="alert">
+ 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+ 
+                        <span aria-hidden="true">x</span>
+ 
+                    </button>
+ 
+ 
+                {{message}}
+ 
+ 
+                </div>
+ 
+ 
+                {% endfor %}
+ 
+                {% endif %}
+                {% endwith %}
+			<!-- Tabel -->
+
+			<table class="table table-dark table-striped table-hover">
+				<thead>
+					<tr>
+						<th>S.No.</th>
+						<th>Sub.Code</th>
+						<th>Sub.Name</th>
+						<th>Topic</th>
+						<th>Deadline</th>
+						<th>Next class</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in assignments %}
+					<tr>
+						<td>{{row.sno}}</td>
+						<td>{{row.code}}</td>
+						<td>{{row.name}}</td>
+						<td>{{row.topic}}</td>
+						<td>{{row.deadline}}</td>
+						<td>{{row.nextclass}}</td>
+						<td>
+							<a href="/update/{{row.sno}}" class="edit" data-toggle="modal" data-target="#mymodaledit{{row.sno}}" data-placement="top" title="Edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+							<a href="/delete/{{row.sno}}" class="delete" onclick="return confirm('Are You Sure To Delete ?')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+							<a href="" class="help" data-toggle="modal" data-target="#mymodalhelp" data-placement="top" title="Help"><i class="material-icons" data-toggle="tooltip" title="Help">&#xe0bf;</i></a>
+							<a href="/done/{{row.sno}}" class="done"  onclick="return confirm('Are You Sure You Have Done this Assignment !')" style="color: greenyellow" data-placement="top" title="Done"><i class="material-icons" data-toggle="tooltip" title="Done">&#xe86c;</i></a>
+
+						</td>
+
+					</tr>
+
+					<!-- Model Edit Assignment -->
+					<div id="mymodaledit{{row.sno}}" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<form action="{{url_for('update')}}" method="POST">
+									<div class="modal-header">						
+										<h4 class="modal-title">Edit Assignment</h4>
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									</div>
+									<div class="modal-body">					
+										<div class="form-group">
+											<label>Sub.Code</label>
+											<input type="hidden"  name="sno" value="{{row.sno}}">
+											<input type="text" class="form-control" required name="code" value="{{row.code}}">
+										</div>
+										<div class="form-group">
+											<label>Sub.Name</label>
+											<input type="text" class="form-control" required name="name" value="{{row.name}}">
+										</div>
+										<div class="form-group">
+											<label>Topic</label>
+											<textarea class="form-control" required name="topic" value="{{row.topic}}" placeholder="is there any change in topic"></textarea>
+										</div>
+										<div class="form-group">
+											<label>Deadline</label>
+											<input type="datetime-local" class="form-control" required name="deadline" value="{{row.deadline}}" > 
+										</div>	
+										<div class="form-group">
+											<label>Next Class</label>
+											<input type="datetime-local" class="form-control" required name="nextclass" value="{{row.nextclass}}" >
+										</div>					
+									</div>
+									<div class="modal-footer">
+										<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+										<input type="submit" class="btn btn-info" value="Update">
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+
+
+					{% endfor %}
+
+				</tbody>
+			</table>
+		</div>
+			<nav class="navbar navbar-light" style="background-color:gray;">
+			  <form action="https://www.medium.com/search" method="GET" class="form-inline">
+			    <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search Articles">
+			    <button class="btn btn-success my-2 my-sm-0" type="submit"><input class="btn btn-success btn-sm" type="submit" value="Search"></button>
+			  </form>
+			</nav>
+	</div>
+</div>
+
+<!-- Model Add Assignment -->
+<div id="mymodal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="{{url_for('insert')}}" method="POST">
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Assignment</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Sub.Code</label>
+						<input type="text" class="form-control" required name="code">
+					</div>
+					<div class="form-group">
+						<label>Sub.Name</label>
+						<input type="text" class="form-control" required name="name">
+					</div>
+					<div class="form-group">
+						<label>Topic</label>
+						<textarea class="form-control" required name="topic"></textarea>
+					</div>
+					<div class="form-group">
+						<label>Deadline</label>
+						<input type="datetime-local" class="form-control" required name="deadline"> 
+					</div>	
+					<div class="form-group">
+						<label>Next Class</label>
+						<input type="datetime-local" class="form-control" required name="nextclass">
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-success" value="Add">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+	<!-- Model Help Assignment -->
+<div id="mymodalhelp" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="{{url_for('help')}}" method="POST">
+				<div class="modal-header">						
+					<h4 class="modal-title">Help in Assignment</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Fill the Following textfield !</p>
+					<p class="text-warning"><small>This action cannot be undone.</small></p>					
+					<div class="form-group">
+						<label>Sub.Name</label>
+						<input type="hidden"  name="sno" value="sno">
+						<input type="text" class="form-control" required name="name">
+					</div>
+					<div class="form-group">
+						<label>Dought</label>
+						<textarea class="form-control" required name="dought"></textarea>
+					</div>				
+				</div>
+
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-info" value="Help">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- Model Delete Assignment -->
+<!-- <div id="mymodaldelete" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Delete Assignment</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p>Are you sure you want to delete these Assignment?</p>
+					<p class="text-warning"><small>This action cannot be undone.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-danger" value="Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div> -->
+
+
+<!-- Model Done Assignment -->
+<!-- <div id="mymodaldone" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Assignment Done</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p>Are you sure you have done these Assignment?</p>
+					<p class="text-warning"><small>This action cannot be undone.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-success" value="Done">
+				</div>
+			</form>
+		</div>
+	</div>
+</div> -->
+
+
+
+
+
+{% endblock %}

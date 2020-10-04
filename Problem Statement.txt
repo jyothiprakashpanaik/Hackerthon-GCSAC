@@ -1,0 +1,8 @@
+$ Problem Statement for the Hackerthon:
+         #  Develop a website which keeps track of assignments with deadlines,
+	course time table also shows relevant articles crawling the web on the topic searched.
+	Also a built in form to submit doubts to the relevant faculty.
+	
+	@ NOTE:
+	- The website should be fully functional. For backend use phpMyAdmin or any similar softwares.
+             - You will only be getting participation certificate if you present and submit the code.
